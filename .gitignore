@@ -1,0 +1,22 @@
+node_modules/
+/test-results/
+/coverage/
+/playwright-report/
+npm-debug.log*
+.DS_Store
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+.npmrc.local
+*.pem
+*.key
+
+# Publish only documentation written for the repository.
+/docs/*
+!/docs/development.md
+
+# Local browser review materials
+/tests/browser-fixture.mjs
+/tests/fixtures/

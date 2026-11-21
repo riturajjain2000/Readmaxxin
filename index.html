@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f5f2">
+  <title>Readmaxxin — Read with understanding</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="/vendor/katex/katex.css">
+</head>
+<body>
+  <header class="topbar" id="topbar">
+    <div class="brand" aria-label="Readmaxxin"><span class="brand-mark">r</span><span>readmaxxin</span></div>
+    <div class="toolbar">
+      <label class="searchbox" aria-label="Search this document"><span aria-hidden="true">⌕</span><input id="searchInput" type="search" placeholder="Find in document" autocomplete="off"><kbd>⌘ F</kbd></label>
+      <span class="match-count" id="matchCount" aria-live="polite"></span>
+      <button class="icon-button" id="prevMatch" title="Previous match" aria-label="Previous match">↑</button>
+      <button class="icon-button" id="nextMatch" title="Next match" aria-label="Next match">↓</button>
+      <span class="toolbar-divider"></span>
+      <button class="ai-status" id="aiStatus" type="button" title="AI connection settings">Connect AI</button>
+      <button class="button quiet" id="openFile" title="Open file" aria-label="Open file">Open file</button>
+      <input type="file" id="fileInput" accept=".txt,.md,.markdown,.html,.htm,.pdf,.docx,text/plain,text/markdown,text/html,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden>
+      <button class="icon-button" id="settingsButton" title="AI settings" aria-label="AI settings">⚙</button>
+      <button class="icon-button" id="focusButton" title="Distraction-free mode" aria-label="Distraction-free mode" aria-pressed="false">⛶</button>
+    </div>
+  </header>
+  <main class="stage" id="stage">
+    <div class="document-meta"><div><span class="eyebrow" id="formatLabel">YOUR READING SPACE</span><span id="documentTitle" class="document-title"></span></div><div class="meta-actions"><button class="text-button" id="summarizeDocument" type="button" hidden>Summarize</button><span class="save-status" id="saveStatus" aria-live="polite">Saved locally</span></div></div>
+    <div class="notice" id="notice" role="status" hidden><span id="noticeText"></span><button type="button" id="dismissNotice" aria-label="Dismiss message">×</button></div>
+    <article id="reader" class="reader" contenteditable="true" spellcheck="false" role="textbox" aria-label="Reading document" aria-multiline="true"></article>
+    <div class="empty-hint" id="emptyHint"><div class="empty-icon">✳</div><h1>A quieter way to understand.</h1><p>Paste something you’re reading, start typing, or open a text, Markdown, HTML, PDF, or DOCX file.</p><span class="paste-hint"><kbd>⌘</kbd> <kbd>V</kbd> to paste</span></div>
+    <div class="selection-toolbar" id="selectionToolbar" role="toolbar" aria-label="Selection actions" hidden><span id="selectionLabel">Selection</span><button class="button primary small" id="explainButton" type="button">Explain <kbd>⌘ ⇧ E</kbd></button><button class="toolbar-action" id="highlightSelection" type="button" title="Highlight for this session">Highlight</button><button class="toolbar-action" id="summarizeSelection" type="button">Summarize</button></div>
+    <aside class="explanation" id="explanation" aria-label="Contextual explanation" aria-busy="false" hidden>
+      <div class="explanation-head"><button class="icon-button back-button" id="backExplanation" aria-label="Back to previous explanation" title="Back" hidden>←</button><span class="sparkle">✳</span><span class="explanation-term" id="explanationTerm"></span><button class="icon-button close-button" id="closeExplanation" aria-label="Close explanation" title="Close (Esc)">×</button></div>
+      <div class="explanation-body" id="explanationBody" aria-live="polite" aria-atomic="false"></div>
+      <div class="explanation-actions"><button data-action="simplify" type="button">Simplify</button><button data-action="example" type="button">Example</button><button data-action="why-matters" type="button">Why it matters</button><button data-action="first-principles" type="button">First principles</button></div>
+      <details class="more-actions" id="moreActions"><summary>More actions</summary><div><button data-action="prerequisites" type="button">Prerequisites</button><button data-action="compare" type="button">Compare with…</button><button data-action="counterexample" type="button">Counterexample</button><button data-action="critique" type="button">Critique claim</button><button data-action="translate" type="button">Translate…</button><button data-action="math" type="button">Explain mathematically</button><button data-action="symbols" type="button">Explain each symbol</button><button data-action="intuition" type="button">Equation intuition</button><button data-action="derive" type="button">Derive step by step</button><button data-action="fact-check" type="button">Assess using model knowledge</button></div></details>
+      <form id="followupForm" class="followup"><input id="followupInput" placeholder="Ask a follow-up…" aria-label="Ask a follow-up question"><button aria-label="Send question">↑</button></form>
+      <div id="explanationStatus" class="explanation-status" aria-live="polite"></div>
+    </aside>
+  </main>
+  <div id="searchHighlights" aria-hidden="true"></div>
+  <footer class="footer" id="footer"><span>One space. Yours to return to. <button id="clearHighlights" class="text-button" type="button" hidden>Clear temporary highlights</button></span><span>Explanations use your selection and its paragraph.</span></footer>
+  <dialog id="settingsDialog" class="settings-dialog">
+    <form method="dialog" id="settingsForm">
+      <div class="dialog-heading"><div><span class="eyebrow">PREFERENCES</span><h2>AI connection</h2></div><button class="icon-button" type="button" data-close-settings aria-label="Close settings">×</button></div>
+      <p class="settings-note">Choose a running local model or your cloud provider. Routine explanations send only your selection and its paragraph. Your API key is held for this page session and never saved to disk.</p>
+      <fieldset class="mode-options"><legend>AI model</legend><label><input type="radio" name="providerMode" value="local" checked> Local</label><label><input type="radio" name="providerMode" value="cloud"> Cloud</label></fieldset>
+      <label>Protocol<select id="protocolInput"><option value="compatible">OpenAI compatible</option><option value="ollama">Ollama</option></select></label>
+      <label>Endpoint<input id="endpointInput" type="url" placeholder="http://localhost:1234/v1/chat/completions" required></label>
+      <button class="button quiet" type="button" id="testConnection">Check connection</button>
+      <label>Model<input id="modelInput" type="text" placeholder="Exact model name" list="availableModels" required></label><datalist id="availableModels"></datalist>
+      <label>API key <span class="optional">(optional for local models)</span><input id="keyInput" type="password" placeholder="Stored for this session only" autocomplete="off"></label>
+      <div class="dialog-actions"><button class="button quiet" type="button" data-close-settings>Cancel</button><button class="button primary" id="saveSettings" type="submit">Save connection</button></div>
+      <p class="connection-status" id="connectionStatus"></p>
+    </form>
+  </dialog>
+  <dialog id="actionDialog" class="settings-dialog"><form id="actionForm"><div class="dialog-heading"><h2 id="actionTitle">Follow-up action</h2><button class="icon-button" type="button" data-close-action aria-label="Close action">×</button></div><label>Your choice<input id="actionQuestion" required autocomplete="off"></label><div class="dialog-actions"><button class="button quiet" type="button" data-close-action>Cancel</button><button class="button primary" type="submit">Continue</button></div></form></dialog>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
